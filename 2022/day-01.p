@@ -42,7 +42,7 @@ END.
 
 // Get the elf with most calories
 FOR EACH ttElfCarriage NO-LOCK BY dAmount DESC:
-    ASSIGN cSoltuion = SUBSTITUTE("Elf &1 has most most than all others, an amount of &2 calories.", ttElfCarriage.iElf, ttElfCarriage.dAmount).
+    ASSIGN cSoltuion = SUBSTITUTE("Elf &1 has more than all others, an amount of &2 calories.", ttElfCarriage.iElf, ttElfCarriage.dAmount).
     LEAVE.
 END.
 
