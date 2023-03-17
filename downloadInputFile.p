@@ -33,7 +33,8 @@ DEFINE VARIABLE cFileName         AS CHARACTER        NO-UNDO.
 ASSIGN 
    iYear    = YEAR (TODAY)
    iDay     = DAY (TODAY)
-   cSession = "your-session-cookie".
+   cSession = "your-session-cookie"
+   cDir     = "D:/workspace/AdventOfCode/".
 .
 IF MONTH (TODAY) LT 12 THEN DO:
    ASSIGN 
@@ -51,7 +52,7 @@ REPEAT:
    WITH SIDE-LABELS 1 DOWN FRAME fr-Parameters TITLE " Enter your Session, Output Dir and Select Year & Day " CENTERED ROW 3.
    
    cURL = SUBSTITUTE ("https://adventofcode.com/&1/day/&2/input", iYear, iDay).
-   cFileName = SUBSTITUTE ("&1\\&2\\input\\&3.txt", cDir, iYear, STRING (iDay, "99")).
+   cFileName = SUBSTITUTE ("&1/&2/input/&3.txt", cDir, iYear, STRING (iDay, "99")).
    oCookie = Cookie:Parse(SUBSTITUTE ("session=&1", cSession)).
       
    oRequest = RequestBuilder:Get(cURL):AddCookie(oCookie):Request. 
