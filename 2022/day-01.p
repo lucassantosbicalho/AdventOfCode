@@ -13,7 +13,7 @@ BLOCK-LEVEL ON ERROR UNDO, THROW.
 DEFINE VARIABLE iElf      AS INTEGER   NO-UNDO INIT 1.
 DEFINE VARIABLE cNumber   AS CHARACTER NO-UNDO.
 DEFINE VARIABLE dAmount   AS DECIMAL   NO-UNDO.
-DEFINE VARIABLE cSoltuion AS CHARACTER NO-UNDO.
+DEFINE VARIABLE cSolution AS CHARACTER NO-UNDO.
 
 DEFINE TEMP-TABLE ttElfCarriage NO-UNDO
     FIELD iElf    AS INTEGER 
@@ -42,8 +42,8 @@ END.
 
 // Get the elf with most calories
 FOR EACH ttElfCarriage NO-LOCK BY dAmount DESC:
-    ASSIGN cSoltuion = SUBSTITUTE("Elf &1 has more than all others, an amount of &2 calories.", ttElfCarriage.iElf, ttElfCarriage.dAmount).
+    ASSIGN cSolution = SUBSTITUTE("Elf &1 has more than all others, an amount of &2 calories.", ttElfCarriage.iElf, ttElfCarriage.dAmount).
     LEAVE.
 END.
 
-MESSAGE cSoltuion SKIP SUBSTITUTE ("Took &1 msecs.", ETIME) VIEW-AS ALERT-BOX.
+MESSAGE cSolution SKIP SUBSTITUTE ("Took &1 msecs.", ETIME) VIEW-AS ALERT-BOX.
