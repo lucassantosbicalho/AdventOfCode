@@ -10,10 +10,12 @@
 
 BLOCK-LEVEL ON ERROR UNDO, THROW.
 
-DEFINE VARIABLE iElf      AS INTEGER   NO-UNDO INIT 1.
-DEFINE VARIABLE cNumber   AS CHARACTER NO-UNDO.
-DEFINE VARIABLE dAmount   AS DECIMAL   NO-UNDO.
-DEFINE VARIABLE cSolution AS CHARACTER NO-UNDO.
+DEFINE VARIABLE iElf           AS INTEGER           NO-UNDO INIT 1.
+DEFINE VARIABLE cNumber        AS CHARACTER         NO-UNDO.
+DEFINE VARIABLE dAmount        AS DECIMAL           NO-UNDO.
+DEFINE VARIABLE cSolution      AS CHARACTER         NO-UNDO.
+DEFINE VARIABLE dAmountOfThree AS DECIMAL EXTENT 3  NO-UNDO.
+DEFINE VARIABLE k              AS INTEGER           NO-UNDO.
 
 DEFINE TEMP-TABLE ttElfCarriage NO-UNDO
     FIELD iElf    AS INTEGER 
@@ -41,9 +43,21 @@ DO WHILE TRUE ON ENDKEY UNDO, LEAVE:
 END.
 
 // Get the elf with most calories
+k = 0.
 FOR EACH ttElfCarriage NO-LOCK BY dAmount DESC:
-    ASSIGN cSolution = SUBSTITUTE("Elf &1 has more than all others, an amount of &2 calories.", ttElfCarriage.iElf, ttElfCarriage.dAmount).
-    LEAVE.
+    CASE k:
+        WHEN 0 THEN dAmountOfThree[1] = ttElfCarriage.dAmount.
+        WHEN 1 THEN dAmountOfThree[2] = ttElfCarriage.dAmount.
+        WHEN 2 THEN dAmountOfThree[3] = ttElfCarriage.dAmount.
+    END.    
+    k = k + 1.
+    IF k = 3 THEN LEAVE .
 END.
+
+ASSIGN cSolution = SUBSTITUTE("[PART 1] Elf &1 has more than all others, an amount of &2 calories.&3[PART 2] The total of calories of the three top Elves is &4", 
+                                ttElfCarriage.iElf, 
+                                ttElfCarriage.dAmount,
+                                CHR(10),
+                                (dAmountOfThree[1] + dAmountOfThree[2] + dAmountOfThree[3])).
 
 MESSAGE cSolution SKIP SUBSTITUTE ("Took &1 msecs.", ETIME) VIEW-AS ALERT-BOX.
