@@ -5,11 +5,11 @@
 
     Syntax      :
 
-    Description : Rock Paper and Scissors
+    Description : Day 2: Rock Paper Scissors
 
     Author(s)   : Lucas Bicalho
     Created     : Thu Mar 16 21:21:37 BRT 2023
-    Notes       : Rock beats scissors. Scissors beats paper. Paper beats Rock.
+    Notes       : 
   ----------------------------------------------------------------------*/
 
 /* ***************************  Definitions  ************************** */

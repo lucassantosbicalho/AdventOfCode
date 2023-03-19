@@ -1,9 +1,15 @@
 
 /*------------------------------------------------------------------------
-    File        : day-01.p
-    Purpose     : Day 01 - Advent of Code
+    File        : day-012.p
+    Purpose     : 
+
+    Syntax      :
+
+    Description : Day 1: Calorie Counting
+
     Author(s)   : Lucas Bicalho
     Created     : Mon Mar 06 13:13:40 BRT 2023
+    Notes       :
   ----------------------------------------------------------------------*/
 
 /* ***************************  Definitions  ************************** */
