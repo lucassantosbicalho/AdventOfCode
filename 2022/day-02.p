@@ -23,7 +23,7 @@ DEFINE VARIABLE cTheirChoice   AS CHARACTER NO-UNDO.
 DEFINE VARIABLE cMyInstruction AS CHARACTER NO-UNDO.
 DEFINE VARIABLE iTotalScorePt1 AS INTEGER   NO-UNDO INIT 0.
 DEFINE VARIABLE iTotalScorePt2 AS INTEGER   NO-UNDO INIT 0.
-
+DEFINE VARIABLE endTime        AS INTEGER   NO-UNDO.
 /* ********************  Preprocessor Definitions  ******************** */
 
 /* ************************  Function Prototypes ********************** */
@@ -56,10 +56,17 @@ DO WHILE TRUE ON ENDKEY UNDO, LEAVE:
     iTotalScorePt2 = iTotalScorePt2 + getScorePt2(cTheirChoice, cMyInstruction).
     
 END.
-
+endTime = ETIME.
 cSolution = SUBSTITUTE("[PART 1] My total score is &1&2[PART 2] My total score is &3", iTotalScorePt1, CHR(10), iTotalScorePt2).
-MESSAGE cSolution SKIP SUBSTITUTE ("Took &1 msecs.", ETIME) VIEW-AS ALERT-BOX.
+MESSAGE cSolution SKIP SUBSTITUTE ("Took &1 msecs.", endTime) VIEW-AS ALERT-BOX.
 
+OUTPUT TO VALUE ("D:\workspace\AdventOfCode\README.md") APPEND.
+/* Append a new line character to the end of the file */
+PUT UNFORMATTED "~n~n".
+/* Append some text after the new line character */
+PUT UNFORMATTED "**DAY 02**~n~n".
+PUT UNFORMATTED SUBSTITUTE ("Solved in &1 milliseconds.", endTime).
+OUTPUT CLOSE.
 
 /* ************************  Function Implementations ***************** */
 

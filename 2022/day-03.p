@@ -26,7 +26,7 @@ DEFINE VARIABLE ch             AS CHARACTER NO-UNDO.
 DEFINE VARIABLE pos            AS INTEGER   NO-UNDO.
 DEFINE VARIABLE cPriorities    AS CHARACTER NO-UNDO CASE-SENSITIVE.
 DEFINE VARIABLE iSumPriorities AS INTEGER   NO-UNDO.
-
+DEFINE VARIABLE endTime        AS INTEGER   NO-UNDO.
 DEFINE TEMP-TABLE ttContents NO-UNDO
     FIELD i           AS INTEGER
     FIELD cItems      AS CHARACTER FORMAT "x(50)" CASE-SENSITIVE
@@ -135,10 +135,16 @@ FOR EACH ttContentsGroup EXCLUSIVE-LOCK
 END.
 
 cSolution = cSolution + CHR(10) + SUBSTITUTE("[PART 2] The sum of the priorities of all groups is &1", iSumPriorities).
+endTime = ETIME.
+MESSAGE cSolution SKIP SUBSTITUTE ("Took &1 msecs.", endTime) VIEW-AS ALERT-BOX.
 
-MESSAGE cSolution SKIP SUBSTITUTE ("Took &1 msecs.", ETIME) VIEW-AS ALERT-BOX.
-
-
+OUTPUT TO VALUE ("D:\workspace\AdventOfCode\README.md") APPEND.
+/* Append a new line character to the end of the file */
+PUT UNFORMATTED "~n~n".
+/* Append some text after the new line character */
+PUT UNFORMATTED "**DAY 03**~n~n".
+PUT UNFORMATTED SUBSTITUTE ("Solved in &1 milliseconds.", endTime).
+OUTPUT CLOSE.
 
 /* ************************  Function Implementations ***************** */
 

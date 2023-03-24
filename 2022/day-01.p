@@ -22,7 +22,7 @@ DEFINE VARIABLE dAmount        AS DECIMAL           NO-UNDO.
 DEFINE VARIABLE cSolution      AS CHARACTER         NO-UNDO.
 DEFINE VARIABLE dAmountOfThree AS DECIMAL EXTENT 3  NO-UNDO.
 DEFINE VARIABLE k              AS INTEGER           NO-UNDO.
-
+DEFINE VARIABLE endTime        AS INTEGER           NO-UNDO.
 DEFINE TEMP-TABLE ttElfCarriage NO-UNDO
     FIELD iElf    AS INTEGER 
     FIELD dAmount AS DECIMAL
@@ -59,6 +59,7 @@ FOR EACH ttElfCarriage NO-LOCK BY dAmount DESC:
     k = k + 1.
     IF k = 3 THEN LEAVE .
 END.
+endTime = ETIME.
 
 ASSIGN cSolution = SUBSTITUTE("[PART 1] Elf &1 has more than all others, an amount of &2 calories.&3[PART 2] The total of calories of the three top Elves is &4", 
                                 ttElfCarriage.iElf, 
@@ -66,4 +67,12 @@ ASSIGN cSolution = SUBSTITUTE("[PART 1] Elf &1 has more than all others, an amou
                                 CHR(10),
                                 (dAmountOfThree[1] + dAmountOfThree[2] + dAmountOfThree[3])).
 
-MESSAGE cSolution SKIP SUBSTITUTE ("Took &1 msecs.", ETIME) VIEW-AS ALERT-BOX.
+MESSAGE cSolution SKIP SUBSTITUTE ("Took &1 msecs.", endTime) VIEW-AS ALERT-BOX.
+
+OUTPUT TO VALUE ("D:\workspace\AdventOfCode\README.md") APPEND.
+/* Append a new line character to the end of the file */
+PUT UNFORMATTED "~n~n".
+/* Append some text after the new line character */
+PUT UNFORMATTED "**DAY 01**~n~n".
+PUT UNFORMATTED SUBSTITUTE ("Solved in &1 milliseconds.", endTime).
+OUTPUT CLOSE.
