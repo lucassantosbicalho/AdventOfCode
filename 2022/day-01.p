@@ -70,9 +70,6 @@ ASSIGN cSolution = SUBSTITUTE("[PART 1] Elf &1 has more than all others, an amou
 MESSAGE cSolution SKIP SUBSTITUTE ("Took &1 msecs.", endTime) VIEW-AS ALERT-BOX.
 
 OUTPUT TO VALUE ("D:\workspace\AdventOfCode\README.md") APPEND.
-/* Append a new line character to the end of the file */
-PUT UNFORMATTED "~n~n".
-/* Append some text after the new line character */
-PUT UNFORMATTED "**DAY 01**~n~n".
-PUT UNFORMATTED SUBSTITUTE ("Solved in &1 milliseconds.", endTime).
+/* Append some text to the end of the file */
+PUT UNFORMATTED SUBSTITUTE ("~n~n**DAY 01**~n~nSolved in &1 milliseconds.", endTime).
 OUTPUT CLOSE.
