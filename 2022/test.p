@@ -11,5 +11,5 @@ WHERE Backlog.Tickets.Complexity = "High"
 IF isFridayAfternoon AND (NOT AVAIL Backlog.Tickets) THEN RUN prGoToHappyHour(OUTPUT cMessage).
 ELSE RUN prSolveItWithOpenEdge(Backlog.Tickets.Id, OUTPUT cMessage).
 
-MESSAGE cMessage SKIP cDeveloper
+MESSAGE cMessage
 VIEW-AS ALERT-BOX "Info".
