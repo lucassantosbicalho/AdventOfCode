@@ -20,3 +20,7 @@ Solved in 37 milliseconds.
 **DAY 03**
 
 Solved in 13 milliseconds.
+
+**DAY 04**
+
+Solved in 22 milliseconds.

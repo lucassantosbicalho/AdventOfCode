@@ -28,6 +28,7 @@ DEFINE TEMP-TABLE ttAssignments NO-UNDO
     FIELD iLL2     AS INTEGER 
     FIELD iUL2     AS INTEGER
     FIELD iContain AS INTEGER 
+    FIELD iOverlap AS INTEGER 
     INDEX idx IS UNIQUE IS PRIMARY iLine iLL1 iUL1 iLL2 iUL2.
      
 /* ********************  Preprocessor Definitions  ******************** */
@@ -41,6 +42,11 @@ FUNCTION fcIsContainedOrFullyContains RETURNS INTEGER
      INPUT ipiLL2 AS INTEGER,
      INPUT ipiUL2 AS INTEGER) FORWARD.
 
+FUNCTION fcItHasOverlaps RETURNS INTEGER 
+    (INPUT ipiLL1 AS INTEGER,
+     INPUT ipiUL1 AS INTEGER,
+     INPUT ipiLL2 AS INTEGER,
+     INPUT ipiUL2 AS INTEGER) FORWARD.
 
 /* ***************************  Main Block  *************************** */
 
@@ -48,7 +54,6 @@ ETIME (YES).
 
 INPUT FROM "D:/workspace/AdventOfCode/2022/input/04.txt".
 
-// In how many assignment pairs does one range fully contain the other?
 i = 1.
 DO WHILE TRUE ON ENDKEY UNDO, LEAVE:
     IMPORT UNFORMATTED cLine.
@@ -59,21 +64,31 @@ DO WHILE TRUE ON ENDKEY UNDO, LEAVE:
         ttAssignments.iUL1     = INTEGER(ENTRY(2, ENTRY(1 ,cLine, ","), "-"))
         ttAssignments.iLL2     = INTEGER(ENTRY(1, ENTRY(2 ,cLine, ","), "-"))
         ttAssignments.iUL2     = INTEGER(ENTRY(2, ENTRY(2 ,cLine, ","), "-"))
+        /* ------ [ PART 1 ] ------ */
         ttAssignments.iContain = fcIsContainedOrFullyContains(ttAssignments.iLL1,
                                                               ttAssignments.iUL1,
                                                               ttAssignments.iLL2,
-                                                              ttAssignments.iUL2).
+                                                              ttAssignments.iUL2)
+        // ------ [ PART 2 ] ------ */ 
+        ttAssignments.iOverlap = fcItHasOverlaps(ttAssignments.iLL1,
+                                                 ttAssignments.iUL1,
+                                                 ttAssignments.iLL2,
+                                                 ttAssignments.iUL2).
     i = i + 1.
 END.
-
 FOR EACH ttAssignments NO-LOCK: 
     ACCUMULATE ttAssignments.iContain (SUM).
+    ACCUMULATE ttAssignments.iOverlap (SUM).
 END.
 
-cSolution = SUBSTITUTE("[PART 1] The total of assignment pairs that one range fully contains the other is &1", (ACCUM SUM ttAssignments.iContain)).
+cSolution = SUBSTITUTE("[PART 1] The total of assignment pairs that one range fully contains the other is &1.&2[PART 2] The total of overlapped pairs is &3", (ACCUM SUM ttAssignments.iContain), CHR(10), (ACCUM SUM ttAssignments.iOverlap)).
 endTime = ETIME.
 MESSAGE cSolution SKIP SUBSTITUTE ("Took &1 msecs.", endTime) VIEW-AS ALERT-BOX.
 
+OUTPUT TO VALUE ("D:\workspace\AdventOfCode\README.md") APPEND.
+/* Append some text to the end of the file */
+PUT UNFORMATTED SUBSTITUTE ("~n~n**DAY 04**~n~nSolved in &1 milliseconds.", endTime).
+OUTPUT CLOSE.
 /* ************************  Function Implementations ***************** */
 
 FUNCTION fcIsContainedOrFullyContains RETURNS INTEGER 
@@ -117,6 +132,50 @@ FUNCTION fcIsContainedOrFullyContains RETURNS INTEGER
         
 END FUNCTION.
 
-
-
+FUNCTION fcItHasOverlaps RETURNS INTEGER 
+    (INPUT ipiLL1 AS INTEGER,
+     INPUT ipiUL1 AS INTEGER,
+     INPUT ipiLL2 AS INTEGER,
+     INPUT ipiUL2 AS INTEGER):
+/*------------------------------------------------------------------------------
+ Purpose: 
+ Notes:
+     
+        The solution I found is to consider each pair of values as horizontal stacks in the air, below of lamp or the sun.
+        If the stacks overlaps, the shadow formed on the ground has no gaps of light.
+        If the stacks doesn't overlaps, the shadow formed on the ground has gaps of light between them.
+        I think see the problem this way is funny!
+        
+        Example:
+         lineA    2-4,6-8
+         lineB    2-8,3-7
+         lineC    6-6,4-6
+         lineD    1-3,5-6
+          ...      ...
+          
+         lineA:
+                  234
+                       678
+                  ---  ---    (shadow on the ground with gap of light between them)
+         
+         lineB:
+                  2345678
+                   34567
+                  -------     (shadown without gaps)
+                 
+         lineC:
+                      6  
+                    456  
+                    ---       (shadown without gaps)
+         lineD:
+                  123
+                      56
+                  --- --      (shadow on the ground with gap of light between them)     
+                 
+         Mathematically, to solve the problem I can proceed this way:
+             i) See if the (LL2 - UL1 > 0 OR LL1 - UL2 > 0), if yes, this is a gap of light
+------------------------------------------------------------------------------*/    
+        RETURN 1 - INTEGER((ipiLL2 - ipiUL1 > 0) OR (ipiLL1 - ipiUL2 > 0)).
+        
+END FUNCTION.
 
