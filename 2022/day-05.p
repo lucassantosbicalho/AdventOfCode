@@ -17,6 +17,7 @@
 BLOCK-LEVEL ON ERROR UNDO, THROW.
 
 DEFINE VARIABLE stack          AS CHARACTER EXTENT 9 NO-UNDO. 
+DEFINE VARIABLE stack2         AS CHARACTER EXTENT 9 NO-UNDO. 
 DEFINE VARIABLE cLine          AS CHARACTER NO-UNDO.
 DEFINE VARIABLE cSolution      AS CHARACTER NO-UNDO.
 DEFINE VARIABLE i              AS INTEGER   NO-UNDO.
@@ -32,6 +33,9 @@ FUNCTION fcLengthSubstring RETURNS INTEGER
 
 FUNCTION getLastCrateOfStack RETURNS CHARACTER 
     (INPUT cStacks AS CHARACTER EXTENT 9) FORWARD.
+
+FUNCTION fcCleaningExtraCommas RETURNS CHARACTER EXTENT 9 
+    (INPUT ipcStacks AS CHARACTER EXTENT 9) FORWARD.
 
 // https://www.progresstalk.com/threads/find-an-element-in-an-array.143531/
 
@@ -77,43 +81,39 @@ DO i = 1 TO 8 ON ENDKEY UNDO, LEAVE:
 END.
 
 // Cleaning extra commas
-stack[1] = TRIM(REPLACE(stack[1], ", ", ""), ",").
-stack[2] = TRIM(REPLACE(stack[2], ", ", ""), ",").
-stack[3] = TRIM(REPLACE(stack[3], ", ", ""), ",").
-stack[4] = TRIM(REPLACE(stack[4], ", ", ""), ",").
-stack[5] = TRIM(REPLACE(stack[5], ", ", ""), ",").
-stack[6] = TRIM(REPLACE(stack[6], ", ", ""), ",").
-stack[7] = TRIM(REPLACE(stack[7], ", ", ""), ",").
-stack[8] = TRIM(REPLACE(stack[8], ", ", ""), ",").
-stack[9] = TRIM(REPLACE(stack[9], ", ", ""), ",").
+stack = fcCleaningExtraCommas(stack).
+
+stack2 = stack.
 
 // Operating the rearrangement
 DO WHILE TRUE ON ENDKEY UNDO, LEAVE:
     IMPORT UNFORMATTED cLine.
     IF NOT cLine BEGINS "move" THEN NEXT.
-    RUN prRearrange(cLine).
+    
+    /* ------ [ PART 1 ] ------ */
+    RUN prRearrangeWithCrateMover9000(cLine).
+    
+    /* ------ [ PART 2 ] ------ */
+    RUN prRearrangeWithCrateMover9001(cLine).
+    
 END.
 
 // Cleaning extra commas
-stack[1] = TRIM(REPLACE(stack[1], ", ", ""), ",").
-stack[2] = TRIM(REPLACE(stack[2], ", ", ""), ",").
-stack[3] = TRIM(REPLACE(stack[3], ", ", ""), ",").
-stack[4] = TRIM(REPLACE(stack[4], ", ", ""), ",").
-stack[5] = TRIM(REPLACE(stack[5], ", ", ""), ",").
-stack[6] = TRIM(REPLACE(stack[6], ", ", ""), ",").
-stack[7] = TRIM(REPLACE(stack[7], ", ", ""), ",").
-stack[8] = TRIM(REPLACE(stack[8], ", ", ""), ",").
-stack[9] = TRIM(REPLACE(stack[9], ", ", ""), ",").
+stack = fcCleaningExtraCommas(stack).
 
-cSolution = SUBSTITUTE("[PART 1] The crate that ends up on top of each stack is &1.", getLastCrateOfStack(stack)).
+cSolution = SUBSTITUTE("[PART 1] The crate that ends up on top of each stack is &1.&2[PART 2] The crate that ends up on top of each stack is &3", getLastCrateOfStack(stack), CHR(10), getLastCrateOfStack(stack2)).
 endTime = ETIME.
 MESSAGE cSolution SKIP SUBSTITUTE ("Took &1 msecs.", endTime) VIEW-AS ALERT-BOX.
 
+OUTPUT TO VALUE ("D:\workspace\AdventOfCode\README.md") APPEND.
+/* Append some text to the end of the file */
+PUT UNFORMATTED SUBSTITUTE ("~n~n**DAY 05** | Solved in &1 milliseconds.", endTime).
+OUTPUT CLOSE.
 /* **********************  Internal Procedures  *********************** */
 
-PROCEDURE prRearrange:
+PROCEDURE prRearrangeWithCrateMover9000:
 /*------------------------------------------------------------------------------
- Purpose: Executes the rearrangement accordingly to the instruction
+ Purpose: Executes the rearrangement accordingly to the instruction using Crate Mover 9000
  Notes:   Example of instruction: move 1 from 4 to 2
 ------------------------------------------------------------------------------*/
     DEFINE INPUT PARAMETER ipcInstruction AS CHARACTER NO-UNDO.
@@ -136,6 +136,44 @@ PROCEDURE prRearrange:
             stack[iFrom]  = SUBSTRING(stack[iFrom], 1, fcLengthSubstring(iIndex - 1)).
             stack[iFrom]  = TRIM(stack[iFrom], ",").
     END. 
+
+END PROCEDURE.
+
+PROCEDURE prRearrangeWithCrateMover9001:
+/*------------------------------------------------------------------------------
+ Purpose: Executes the rearrangement accordingly to the instruction using Crate Mover 9001
+ Notes:   Example of instruction: move 1 from 4 to 2
+ 
+          The CrateMover 9001 is notable for many new and exciting features: 
+            i) air conditioning, 
+           ii) leather seats, 
+          iii) an extra cup holder, 
+           iv) and the ability to pick up and move multiple crates at once.
+------------------------------------------------------------------------------*/
+    DEFINE INPUT PARAMETER ipcInstruction AS CHARACTER NO-UNDO.
+    DEFINE VARIABLE        k              AS INTEGER   NO-UNDO.
+    DEFINE VARIABLE        iQty           AS INTEGER   NO-UNDO.
+    DEFINE VARIABLE        iFrom          AS INTEGER   NO-UNDO.
+    DEFINE VARIABLE        iTo            AS INTEGER   NO-UNDO.
+    DEFINE VARIABLE        iIndex         AS INTEGER   NO-UNDO.
+    DEFINE VARIABLE        cValue         AS CHARACTER NO-UNDO.
+    
+    iQty   = INTEGER(ENTRY(2, ipcInstruction, " ")).
+    iFrom  = INTEGER(ENTRY(4, ipcInstruction, " ")).
+    iTo    = INTEGER(ENTRY(6, ipcInstruction, " ")).
+    iIndex = NUM-ENTRIES(stack2[iFrom]) - iQty + 1.
+    
+    DO k = 1 TO iQty:
+        cValue = cValue + "," + ENTRY(iIndex, stack2[iFrom]).
+        iIndex = iIndex + 1.
+    END.
+    
+    cValue = TRIM(cValue, ",").
+    
+    ASSIGN 
+        stack2[iTo]    = stack2[iTo] + "," + cValue.
+        stack2[iFrom]  = SUBSTRING(stack2[iFrom], 1, fcLengthSubstring(iIndex - iQty - 1)).
+        stack2[iFrom]  = TRIM(stack2[iFrom], ",").
 
 END PROCEDURE.
 
@@ -190,3 +228,25 @@ FUNCTION getLastCrateOfStack RETURNS CHARACTER
         RETURN cResult.
         
 END FUNCTION.
+
+FUNCTION fcCleaningExtraCommas RETURNS CHARACTER EXTENT 9 
+    (INPUT ipcStacks AS CHARACTER EXTENT 9):
+/*------------------------------------------------------------------------------
+ Purpose: Cleaning extra commas
+ Notes:
+------------------------------------------------------------------------------*/    
+
+        ipcStacks[1] = TRIM(REPLACE(ipcStacks[1], ", ", ""), ",").
+        ipcStacks[2] = TRIM(REPLACE(ipcStacks[2], ", ", ""), ",").
+        ipcStacks[3] = TRIM(REPLACE(ipcStacks[3], ", ", ""), ",").
+        ipcStacks[4] = TRIM(REPLACE(ipcStacks[4], ", ", ""), ",").
+        ipcStacks[5] = TRIM(REPLACE(ipcStacks[5], ", ", ""), ",").
+        ipcStacks[6] = TRIM(REPLACE(ipcStacks[6], ", ", ""), ",").
+        ipcStacks[7] = TRIM(REPLACE(ipcStacks[7], ", ", ""), ",").
+        ipcStacks[8] = TRIM(REPLACE(ipcStacks[8], ", ", ""), ",").
+        ipcStacks[9] = TRIM(REPLACE(ipcStacks[9], ", ", ""), ",").
+        
+        RETURN ipcStacks.
+        
+END FUNCTION.
+
