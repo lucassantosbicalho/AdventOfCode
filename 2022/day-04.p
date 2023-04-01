@@ -69,7 +69,7 @@ DO WHILE TRUE ON ENDKEY UNDO, LEAVE:
                                                               ttAssignments.iUL1,
                                                               ttAssignments.iLL2,
                                                               ttAssignments.iUL2)
-        // ------ [ PART 2 ] ------ */ 
+        /* ------ [ PART 2 ] ------ */ 
         ttAssignments.iOverlap = fcItHasOverlaps(ttAssignments.iLL1,
                                                  ttAssignments.iUL1,
                                                  ttAssignments.iLL2,
@@ -87,7 +87,7 @@ MESSAGE cSolution SKIP SUBSTITUTE ("Took &1 msecs.", endTime) VIEW-AS ALERT-BOX.
 
 OUTPUT TO VALUE ("D:\workspace\AdventOfCode\README.md") APPEND.
 /* Append some text to the end of the file */
-PUT UNFORMATTED SUBSTITUTE ("~n~n**DAY 04**~n~nSolved in &1 milliseconds.", endTime).
+PUT UNFORMATTED SUBSTITUTE ("~n~n**DAY 04** | Solved in &1 milliseconds.", endTime).
 OUTPUT CLOSE.
 /* ************************  Function Implementations ***************** */
 
