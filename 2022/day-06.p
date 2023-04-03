@@ -18,6 +18,8 @@ BLOCK-LEVEL ON ERROR UNDO, THROW.
 
 DEFINE VARIABLE cSolution       AS CHARACTER   NO-UNDO.
 DEFINE VARIABLE i               AS INTEGER     NO-UNDO.
+DEFINE VARIABLE j               AS INTEGER     NO-UNDO.
+DEFINE VARIABLE k               AS INTEGER     NO-UNDO.
 DEFINE VARIABLE cDataStream     AS LONGCHAR    NO-UNDO.
 DEFINE VARIABLE cPiece          AS CHARACTER   NO-UNDO.
 DEFINE VARIABLE endTime         AS INTEGER     NO-UNDO.
@@ -37,12 +39,12 @@ ETIME (YES).
 
 
 COPY-LOB FILE "D:/workspace/AdventOfCode/2022/input/06.txt" TO cDatastream.
+/*
 /* --- PART 1 --- */
 blkPart1:
 DO i = 1 TO LENGTH(cDataStream):
     IF i - 4 < 1 THEN NEXT.
     cPiece = SUBSTRING(cDataStream, i - 4, 4).
-    fcIsUniqueLetters(cPiece).
     IF fcIsUniqueLetters(cPiece) THEN
     DO:
         iQtyCharacters1 = (i - 1). 
@@ -54,11 +56,38 @@ blkPart2:
 DO i = 1 TO LENGTH(cDataStream):
     IF i - 14 < 1 THEN NEXT.
     cPiece = SUBSTRING(cDataStream, i - 14, 14).
-    fcIsUniqueLetters(cPiece).
     IF fcIsUniqueLetters(cPiece) THEN
     DO:
         iQtyCharacters2 = (i - 1). 
         LEAVE blkPart2.
+    END.
+END.
+*/
+iQtyCharacters1 = 0.
+iQtyCharacters2 = 0.
+blk:
+DO i = 1 TO LENGTH(cDataStream):
+    
+    j = i.
+    k = i.
+
+    IF iQtyCharacters1 > 0 AND iQtyCharacters2 > 0 THEN LEAVE blk.
+         
+    /* --- PART 1 --- */
+    IF j > 4 AND iQtyCharacters1 = 0 THEN DO:
+        cPiece = SUBSTRING(cDataStream, j - 4, 4).
+        IF fcIsUniqueLetters(cPiece) THEN
+        DO:
+            iQtyCharacters1 = (j - 1). 
+        END.
+    END.
+    /* --- PART 2 --- */
+    IF k > 14 AND iQtyCharacters2 = 0 THEN DO:
+        cPiece = SUBSTRING(cDataStream, k - 14, 14).
+        IF fcIsUniqueLetters(cPiece) THEN
+        DO:
+            iQtyCharacters2 = (k - 1). 
+        END.
     END.
 END.
 
