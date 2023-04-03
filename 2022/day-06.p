@@ -39,30 +39,7 @@ ETIME (YES).
 
 
 COPY-LOB FILE "D:/workspace/AdventOfCode/2022/input/06.txt" TO cDatastream.
-/*
-/* --- PART 1 --- */
-blkPart1:
-DO i = 1 TO LENGTH(cDataStream):
-    IF i - 4 < 1 THEN NEXT.
-    cPiece = SUBSTRING(cDataStream, i - 4, 4).
-    IF fcIsUniqueLetters(cPiece) THEN
-    DO:
-        iQtyCharacters1 = (i - 1). 
-        LEAVE blkPart1.
-    END.
-END.
-/* --- PART 2 --- */
-blkPart2:
-DO i = 1 TO LENGTH(cDataStream):
-    IF i - 14 < 1 THEN NEXT.
-    cPiece = SUBSTRING(cDataStream, i - 14, 14).
-    IF fcIsUniqueLetters(cPiece) THEN
-    DO:
-        iQtyCharacters2 = (i - 1). 
-        LEAVE blkPart2.
-    END.
-END.
-*/
+
 iQtyCharacters1 = 0.
 iQtyCharacters2 = 0.
 blk:
@@ -95,6 +72,10 @@ cSolution = SUBSTITUTE("[PART 1] Considering 4 unique characters, &1 characters 
 endTime = ETIME.
 MESSAGE cSolution SKIP SUBSTITUTE ("Took &1 msecs.", endTime) VIEW-AS ALERT-BOX.
 
+OUTPUT TO VALUE ("D:\workspace\AdventOfCode\README.md") APPEND.
+/* Append some text to the end of the file */
+PUT UNFORMATTED SUBSTITUTE ("~n~n**DAY 06** | Solved in &1 milliseconds.", endTime).
+OUTPUT CLOSE.
 /* ************************  Function Implementations ***************** */
 
 FUNCTION fcIsUniqueLetters RETURNS LOGICAL 

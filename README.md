@@ -18,3 +18,5 @@ https://adventofcode.com/
 **DAY 04** | Solved in 22 milliseconds.
 
 **DAY 05** | Solved in 18 milliseconds.
+
+**DAY 06** | Solved in 55 milliseconds.
