@@ -23,3 +23,5 @@ https://adventofcode.com/
 ----
 
 **AOC 2023 DAY 01** | Solved in 76 milliseconds.
+
+**AOC 2023 DAY 02** | Solved in 6 milliseconds.

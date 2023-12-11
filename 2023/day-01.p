@@ -5,7 +5,7 @@
 
     Syntax      :
 
-    Description : 
+    Description : Day 1: Trebuchet?!
 
     Author(s)   : lucas.sbicalho
     Created     : Wed Dec 06 22:35:45 BRT 2023
@@ -214,4 +214,3 @@ function fcGetAllNumbersFromString returns character
         return cResult.
         
 end function.
-
