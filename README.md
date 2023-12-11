@@ -8,7 +8,6 @@ https://adventofcode.com/
 
 ## Solution time
 
-
 **AOC 2022 DAY 01** | Solved in 9 milliseconds.
 
 **AOC 2022 DAY 02** | Solved in 37 milliseconds.
@@ -20,3 +19,7 @@ https://adventofcode.com/
 **AOC 2022 DAY 05** | Solved in 18 milliseconds.
 
 **AOC 2022 DAY 06** | Solved in 55 milliseconds.
+
+----
+
+**AOC 2023 DAY 01** | Solved in 76 milliseconds.
