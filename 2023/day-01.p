@@ -29,11 +29,6 @@ define variable lNumberAsWordIsValid as logical no-undo.
 define temp-table tt no-undo
     field cString   as character format 'x(60)'.
     
-define temp-table tt2 no-undo
-    field cString   as character format 'x(60)'
-    field cNumber   as character 
-    field iPosition as integer.
-    
 /* ************************  Function Prototypes ********************** */
 
 
