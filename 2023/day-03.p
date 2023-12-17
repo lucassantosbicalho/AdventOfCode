@@ -48,17 +48,8 @@ define temp-table ttN no-undo
     index idx iLine
     index ixy NumbXi NumbXf NumbYi NumbYf.
                
-/* ************************  Function Prototypes ********************** */
-
-function isNumber returns logical 
-    (input ipcValue as character) forward.
-
-function isSymbol returns logical 
-    (input ipcValue as character) forward.
-
-
 /* ***************************  Main Block  *************************** */
-
+ {2023/include/utils.i} /* functions */
 
 /* ---- Read data ---- */
 run pi-read-data.
@@ -219,31 +210,5 @@ procedure pi-end:
     output close.
 
 end procedure.
-
-
-/* ************************  Function Implementations ***************** */
-
-function isNumber returns logical 
-    (input ipcValue as character):
-/*------------------------------------------------------------------------------
- Purpose: Returns if input value is a number between 0 and 9
- Notes: ASCII for 0 is 48, and ACSII for 9 is 57
-------------------------------------------------------------------------------*/    
-
-        return integer(asc(ipcValue)) > 47  and
-               integer(asc(ipcValue)) < 58.
-        
-end function.
-
-function isSymbol returns logical 
-    (input ipcValue as character):
-/*------------------------------------------------------------------------------
- Purpose:
- Notes: ASCII for . is 46
-------------------------------------------------------------------------------*/    
-        
-        return asc(ipcValue) <> 46 and (not isNumber(ipcValue)). // lookup(string(asc(ipcValue)), "46,48,49,50,51,52,53,54,55,56,57") = 0.  
-                     
-end function.
 
 

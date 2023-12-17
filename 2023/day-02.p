@@ -35,12 +35,9 @@ define temp-table tt no-undo
     field iBlue       as integer
     field iBlueLimit  as integer init 14.
     
-/* ************************  Function Prototypes ********************** */
-
-
 
 /* ***************************  Main Block  *************************** */
-
+{2023/include/utils.i} /* functions */
 
 /* ---- Read data ---- */
 run pi-read-data.
@@ -158,8 +155,4 @@ procedure pi-end:
     output close.
 
 end procedure.
-
-/* ************************  Function Implementations ***************** */
-
-
 
