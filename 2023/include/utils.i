@@ -100,7 +100,7 @@ function fcGetAllNumbersFromString returns character
         
 end function.
 
-function isNumber returns logical 
+function fcIsNumber returns logical 
     (input ipcValue as character):
 /*------------------------------------------------------------------------------
  Purpose: Returns if input value is a number between 0 and 9
@@ -112,13 +112,29 @@ function isNumber returns logical
         
 end function.
 
-function isSymbol returns logical 
+function fcIsSymbol returns logical 
     (input ipcValue as character):
 /*------------------------------------------------------------------------------
  Purpose:
  Notes: ASCII for . is 46
 ------------------------------------------------------------------------------*/    
         
-        return asc(ipcValue) <> 46 and (not isNumber(ipcValue)). // lookup(string(asc(ipcValue)), "46,48,49,50,51,52,53,54,55,56,57") = 0.  
+        return asc(ipcValue) <> 46 and (not fcIsNumber(ipcValue)). // lookup(string(asc(ipcValue)), "46,48,49,50,51,52,53,54,55,56,57") = 0.  
                      
+end function.
+
+function fcCalculatePoints returns integer 
+    (input ipcValue as integer):
+/*------------------------------------------------------------------------------
+ Purpose: 1 point for the first match, then double it for each match after the first
+ Notes: ipcValue = number of matches to double it
+ 
+        Ex: 1 match = 1 point. 2 matches = 2 points. 3 matches = 6 points.
+------------------------------------------------------------------------------*/    
+        define variable iResult as integer no-undo.
+        
+        if ipcValue = 1 then iResult = 1.
+        if ipcValue > 1 then iResult = 2 * fcCalculatePoints(ipcValue - 1).
+        
+        return iResult.
 end function.

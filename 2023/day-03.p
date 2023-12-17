@@ -98,11 +98,11 @@ procedure pi-read-data:
     for each tt:
         do i = 1 to length(tt.cString):
             cStr = substring(tt.cString, i, 1).
-            if isSymbol(cStr) then do:   
+            if fcIsSymbol(cStr) then do:   
                 create ttS.
                 assign 
                     ttS.iLine           = tt.iLine
-                    ttS.isSymbol        = isSymbol(cStr)
+                    ttS.isSymbol        = fcIsSymbol(cStr)
                     ttS.cSymbol         = cStr
                     ttS.SymbX           = tt.iLine
                     ttS.SymbY           = i. 
@@ -114,12 +114,12 @@ procedure pi-read-data:
         iFinPosNumber = 0.
         do i = 1 to length(tt.cString):
             cStr = substring(tt.cString, i, 1).
-            if isNumber(cStr) then do:
+            if fcIsSymbol(cStr) then do:
                 if i < iFinPosNumber then next.
                 create ttN.
                 assign
                     ttN.iLine           = tt.iLine
-                    ttN.isNumber        = isNumber(cStr)
+                    ttN.isNumber        = fcIsSymbol(cStr)
                     ttN.NumbXi          = tt.iLine
                     ttN.NumbXf          = tt.iLine
                     ttN.NumbYi          = i.
@@ -130,7 +130,7 @@ procedure pi-read-data:
                     j = j + 1.
                     if j > length(tt.cString) then leave doBlk.
                     cStr = substring(tt.cString, j, 1).
-                    if not isNumber(cStr) then leave doBlk.
+                    if not fcIsSymbol(cStr) then leave doBlk.
                     assign
                         cOutNumber    = substitute("&1&2", cOutNumber, cStr)
                         iFinPosNumber = j.
